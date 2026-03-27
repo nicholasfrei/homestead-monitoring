@@ -40,6 +40,14 @@ ESP32 monitor = active early-warning system.
 
 ## 3) Recommended Shopping List (BOM)
 
+### Traditional Gardening Materials
+
+- **Metal Planter**
+- **Mulch**
+- **Gardening Soil**
+- **Olla/Terra Cotta Pots**
+  - Example: [Classic Olla Watering Pot with Lid](https://www.amazon.com/Olla-Company-Classic-Large-Irrigation/dp/B0BTRKQHSR)
+
 ### Core Electronics (Required)
 
 - **ESP32 Dev Board**
@@ -74,7 +82,6 @@ ESP32 monitor = active early-warning system.
 
 - Probe mounting stake or holder to keep insertion depth consistent
 - Cable protection (split loom or flexible conduit wherever cables are exposed)
-- Mulch (straw or wood chips): 2–4 inch layer over bed to reduce evaporation and moderate soil temps
 - Shade strategy for electronics enclosure (porch post mount, underside of a shelf, or small sun shield)
 
 ## 4) Placement Guidelines (Critical for Accuracy)

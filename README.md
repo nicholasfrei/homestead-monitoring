@@ -22,10 +22,24 @@ This project is designed for hot, dry climates where plants can decline quickly 
 3. Readings are filtered and converted to percent moisture using your dry/wet calibration.
 4. If moisture is below threshold for a sustained period, ESP32 sends an `ntfy` push alert.
 5. You refill the Olla reservoir and the system confirms recovery.
-  ![How Olla Irrigation Works](how-olla-irrigation-works.png)
+
+```mermaid
+flowchart TD
+  olla[OllaReservoir] --> moistureGradient[MoistureGradientInSoil]
+  roots[PlantRoots] --> moistureGradient
+  probe[CapacitiveProbe] --> esp32[ESP32Monitor]
+  moistureGradient --> probe
+  esp32 --> ntfy[ntfyAlerts]
+  ntfy --> phone[PhoneNotification]
+```
   
 Olla = passive water delivery.  
 ESP32 monitor = active warning system.
+
+
+![How Olla Irrigation Works](img/how-olla-irrigation-works.jpg)
+
+
 
 ## 3) Recommended Shopping List (BOM)
 

@@ -1,0 +1,13 @@
+# Cursor/local planning artifacts
+.cursor/plans/
+*.plan.md
+
+# OS/editor files
+.DS_Store
+.vscode/
+
+# Build/output artifacts
+dist/
+build/
+out/
+*.log

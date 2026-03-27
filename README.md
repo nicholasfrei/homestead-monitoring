@@ -22,7 +22,8 @@ This project is designed for hot, dry climates where plants can decline quickly 
 3. Readings are filtered and converted to percent moisture using your dry/wet calibration.
 4. If moisture is below threshold for a sustained period, ESP32 sends an `ntfy` push alert.
 5. You refill the Olla reservoir and the system confirms recovery.
-
+  ![How Olla Irrigation Works](how-olla-irrigation-works.png)
+  
 Olla = passive water delivery.  
 ESP32 monitor = active warning system.
 
@@ -31,14 +32,18 @@ ESP32 monitor = active warning system.
 ## Core Electronics (Required)
 
 - **ESP32 Dev Board**
-  - Example families: DOIT DevKit V1, NodeMCU-32S
-  - Requirement: 3.3V logic, Wi-Fi support, accessible ADC pins
+  - Example: DOIT DevKit V1, NodeMCU-32S
+  - Buy: [DOIT DevKit V1](https://www.amazon.com/ESP32-WROOM-32-Development-ESP-32S-Bluetooth-forArduino/dp/B08PCPJ12M)
+    - Requirements: 3.3V logic, Wi-Fi support, accessible ADC pins
 - **Waterproof Capacitive Soil Moisture Sensor**
-  - Prefer sealed/IP-rated models for long burial
-  - Avoid bare resistive fork probes (fast corrosion and drift)
+  - Buy 2x DFRobot waterproof sensors:
+    - [DFRobot SEN0308](https://www.dfrobot.com/product-2054.html)
+    - Key specs: IP65 body, analog output (0-3V), 3.3-5.5V supply, 1.5m cable.
 - **DS18B20 Waterproof Temperature Probe** (optional but strongly recommended)
+  - Example: [5pcs DS18B20 Temp Sensor](https://www.amazon.com/HiLetgo-DS18B20-Temperature-Stainless-Waterproof/dp/B00M1PM55K)
   - Use for soil or shaded ambient temperature context
 - **IP65+ Enclosure**
+  - Example: [8x6x4 IP67 Enclosure](https://www.amazon.com/YETLEBOX-Waterproof-Electrical-Stainless-Enclosure/dp/B0BZHGCBTH)
   - UV-stable plastic, cable glands, gasketed lid
 - **Outdoor-rated wiring and heat-shrink**
   - UV-resistant cable jacket preferred
@@ -46,7 +51,9 @@ ESP32 monitor = active warning system.
 ## Solar Power (Required for Your Setup)
 
 - **Solar panel:** 6V to 12V, 10W typical starter size
+  - Example [10W 12V Solar Panel](https://www.amazon.com/Newpowa-Polycrystalline-Efficiency-Module-Marine/dp/B00W80N8TA)
 - **Battery:** LiFePO4 6.4V or 12.8V pack (capacity based on autonomy goal)
+  - Example: [LiFePO4 6V](https://www.amazon.com/LiFePO4-Rechargeable-Phosphate-Emergency-Terminals/dp/B09WYF8GP7)
 - **Charge controller:** Compatible with panel + LiFePO4 chemistry
 - **Buck converter:** Stable 5V output for ESP32 input
 - **Inline fuse + disconnect switch** for safety and serviceability
@@ -220,5 +227,3 @@ homestead-monitoring/
    - rolling average filter,
    - threshold/hysteresis logic,
    - ntfy HTTPS notification function.
-
-If you want, the next step can be generating those three files directly so you can start assembling immediately.

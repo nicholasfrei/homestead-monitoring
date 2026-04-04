@@ -1,12 +1,23 @@
 # Homestead Monitoring
 
-Desert-ready automated soil moisture monitoring for a porch garden using:
-- **Olla irrigation** (passive watering)
-- **ESP32** (active monitoring brain)
-- **Solar power** (off-grid)
-- **ntfy** (phone push alerts)
+Automated monitoring for a garden using:
+- **Olla Irrigation** (passive watering)
+- **Solar Power** (off-grid)
+- **ESP32 Microcontroller** (active monitoring brain)
+- **ntfy Push Notifications** (phone alerts)
 
-This project is designed for hot, dry climates where plants can decline quickly if the root zone dries out. The goal is to avoid crop loss by getting early warnings before stress becomes visible.
+This project is designed for hot, arid climates where plants are exposed to very extreme temperatures and dry conditions. The goal is to build an automated monitoring system that helps monitor soil moisture and temperature to avoid crop loss. This is a hobby project and will be expanded over time.
+
+## Repository Structure
+
+homestead-monitoring
+├── README.md
+├── firmware
+│   └── esp32-olla-monitor.ino       ← coming soon
+└── docs
+    ├── supplies.md                  ← full BOM with links and quantities
+    └── wiring.md                    ← ESP32 pin map and power path
+
 
 ## 1) Project Goals
 
@@ -18,71 +29,16 @@ This project is designed for hot, dry climates where plants can decline quickly 
 ## 2) How the System Works
 
 1. A capacitive soil moisture sensor is placed in the root zone, near (but not touching) the Olla.
-2. The ESP32 wakes on a schedule and reads the sensor.
+2. The ESP32 microcontroller wakes on a schedule and reads the sensor.
 3. Readings are filtered and converted to a moisture percentage using dry/wet calibration values.
-4. If moisture stays below a set threshold for a sustained period, the ESP32 sends an `ntfy` push alert to your phone.
+4. If moisture stays below a set threshold for a sustained period, the ESP32 sends an `ntfy` push alert to your phone (only during waking hours).
 5. You refill the Olla reservoir. Once soil moisture recovers above the recovery threshold, the system sends a confirmation and clears the alert state.
-
-```mermaid
-flowchart TD
-  olla[Olla Reservoir] --> moistureGradient[Moisture Gradient in Soil]
-  roots[Plant Roots] --> moistureGradient
-  probe[Capacitive Probe] --> esp32[ESP32 Monitor]
-  moistureGradient --> probe
-  esp32 --> ntfy[ntfy Alert Service]
-  ntfy --> phone[Phone Notification]
-```
-
-Olla = passive water delivery.
-ESP32 monitor = active early-warning system.
 
 ![How Olla Irrigation Works](img/how-olla-irrigation-works.jpg)
 
-## 3) Recommended Shopping List (BOM)
+## 3) Shopping List
 
-### Traditional Gardening Materials
-
-- **Metal Planter**
-- **Mulch**
-- **Gardening Soil**
-- **Olla/Terra Cotta Pots**
-  - Example: [Classic Olla Watering Pot with Lid](https://www.amazon.com/Olla-Company-Classic-Large-Irrigation/dp/B0BTRKQHSR)
-
-### Core Electronics (Required)
-
-- **ESP32 Dev Board**
-  - Example: DOIT DevKit V1, NodeMCU-32S
-  - Buy: [DOIT DevKit V1](https://www.amazon.com/ESP32-WROOM-32-Development-ESP-32S-Bluetooth-forArduino/dp/B08PCPJ12M)
-  - Requirements: 3.3V logic, Wi-Fi support, accessible ADC pins
-- **Waterproof Capacitive Soil Moisture Sensor** (buy 2x)
-  - Buy: [DFRobot SEN0308](https://www.dfrobot.com/product-2054.html)
-  - Key specs: IP65 body, analog output (0–3V), 3.3–5.5V supply, 1.5m cable
-  - Capacitive design avoids the corrosion issues common with resistive sensors
-- **DS18B20 Waterproof Temperature Probe** (optional but strongly recommended)
-  - Example: [5pcs DS18B20 Temp Sensor](https://www.amazon.com/HiLetgo-DS18B20-Temperature-Stainless-Waterproof/dp/B00M1PM55K)
-  - Used for soil or shaded ambient temperature context; helpful for seasonal calibration tuning
-- **IP65+ Enclosure**
-  - Example: [8x6x4 IP67 Enclosure](https://www.amazon.com/YETLEBOX-Waterproof-Electrical-Stainless-Enclosure/dp/B0BZHGCBTH)
-  - UV-stable plastic, cable glands, gasketed lid
-- **Outdoor-rated wiring and heat-shrink**
-  - UV-resistant cable jacket preferred; standard PVC degrades quickly in desert sun
-
-### Solar Power (Required for This Setup)
-
-- **Solar panel:** 6V to 12V, 10W typical starter size
-  - Example: [10W 12V Solar Panel](https://www.amazon.com/Newpowa-Polycrystalline-Efficiency-Module-Marine/dp/B00W80N8TA)
-- **Battery:** LiFePO4 6.4V or 12.8V pack (capacity based on autonomy goal)
-  - Example: [LiFePO4 6V](https://www.amazon.com/LiFePO4-Rechargeable-Phosphate-Emergency-Terminals/dp/B09WYF8GP7)
-  - LiFePO4 preferred over Li-ion for its thermal stability in high-heat environments
-- **Charge controller:** Compatible with your panel voltage and LiFePO4 chemistry
-- **Buck converter:** Stable 5V regulated output for ESP32 power input
-- **Inline fuse + disconnect switch** for safety and easy serviceability
-
-### Mechanical / Garden Materials
-
-- Probe mounting stake or holder to keep insertion depth consistent
-- Cable protection (split loom or flexible conduit wherever cables are exposed)
-- Shade strategy for electronics enclosure (porch post mount, underside of a shelf, or small sun shield)
+The full Bill of Materials with product links, quantities, and specs is in [`docs/supplies.md`](docs/supplies.md).
 
 ## 4) Placement Guidelines (Critical for Accuracy)
 
@@ -162,20 +118,27 @@ Recommended notification types:
 ## 8) Power Budget (Starter Sizing Method)
 
 Estimate daily energy draw by adding:
-- **ESP32 active current** (~160mA) × active minutes per day
+- **ESP32 active current** (~240mA with Wi-Fi) × active minutes per day
 - **ESP32 deep sleep current** (~10µA) × sleep minutes per day
-- **Sensor and regulator overhead** (~5–10mA while awake)
+- **Sensor and regulator overhead** (~12mA while awake: 2× moisture sensors + temp probe)
+- **Buck converter quiescent** (~5mA continuously, even during sleep)
 - **Weather margin** — assume 2–3 cloudy days in a row as your worst case
 
 Example for a 10-minute sample interval (ESP32 active ~15 seconds per cycle):
-- ~36 wake cycles/day × 15s = ~9 minutes active, ~1431 minutes sleeping
-- Rough daily draw: well under 100mAh in most configurations
+- 144 wake cycles/day × 15s = ~36 minutes active, ~1,404 minutes sleeping
+- Active draw at 6V battery: ~247mA × 0.6h = **~148mAh/day**
+- Sleep draw at 6V battery: ~5mA × 23.4h = **~117mAh/day**
+- **Total: ~265mAh/day**
+
+Estimated autonomy on a full 6V 6Ah LiFePO4 charge (no solar):
+- **Best case** (full rated capacity): 6,000mAh ÷ 265mAh/day ≈ **~23 days**
+- **Practical** (80% depth of discharge): 4,800mAh ÷ 265mAh/day ≈ **~18 days**
+
+The 10W panel at 4–5 peak sun hours/day produces ~5,600mAh/day — far more than the ~265mAh/day consumed, so the panel will fully recharge the battery in any normal day of sun.
 
 Design targets:
-- **3+ days autonomy** without any sun input
-- Panel sized to fully recharge daily use plus a recovery margin
-
-When in doubt, oversize the panel and battery — desert heat reduces panel and battery efficiency, so real-world performance is lower than rated specs.
+- **3+ days autonomy** without any sun input ✓ (actual headroom is ~2-3 weeks)
+- Panel sized to fully recharge daily use plus a recovery margin ✓
 
 ## 9) Build and Commissioning Checklist
 
@@ -204,20 +167,11 @@ When in doubt, oversize the panel and battery — desert heat reduces panel and 
 - Adjust thresholds to catch low moisture earlier if plants are showing any stress.
 - Confirm no repeated or spurious alerts are firing.
 
-## 10) Desert Hardening Best Practices
-
-- Keep the enclosure out of direct peak afternoon sun — internal temps can easily exceed component ratings.
-- Use UV-resistant materials for all exposed wiring; standard PVC degrades within one season.
-- Add a drip loop at every cable entry point so water can't track into the enclosure.
-- Keep all joints sealed and strain-relieved to prevent vibration and thermal cycling failures.
-- Re-check calibration if soil composition changes (added amendments, changed potting mix, etc.).
-- Maintain the mulch layer; replace as it decomposes to keep evaporation rates consistent.
-
-## 11) Project Roadmap
+## 10) Project Roadmap
 
 ### Phase 1 — Documentation and Procurement
 
-- Finalize BOM with exact quantities and sources.
+~~- Finalize supplies with exact quantities and sources.~~
 - Prepare wiring diagram and ESP32 pin map.
 
 ### Phase 2 — Single-Zone Prototype
@@ -236,24 +190,10 @@ When in doubt, oversize the panel and battery — desert heat reduces panel and 
 - Optional dashboard (Home Assistant or Grafana) for historical trend tracking.
 - Optional automated refill assist or valve control if desired.
 
-## 12) Repository Structure (Planned)
+## 11) TODO
 
-```text
-homestead-monitoring/
-  README.md
-  .gitignore
-  firmware/
-    esp32-olla-monitor.ino
-  docs/
-    BOM.md
-    commissioning.md
-    wiring.md
-```
-
-## 13) What to Build Next
-
-1. Create `docs/BOM.md` — exact product links, quantities, and per-unit costs.
-2. Create `docs/wiring.md` — ESP32 pin map, power path diagram, and cable routing notes.
+~~1. Create `docs/supplies.md` — exact product links, quantities, and per-unit costs.~~
+~~2. Create `docs/wiring.md` — ESP32 pin map, power path diagram, and cable routing notes.~~
 3. Create `firmware/esp32-olla-monitor.ino` starter sketch with:
    - calibration constants (`dryCal`, `wetCal`),
    - rolling average filter,

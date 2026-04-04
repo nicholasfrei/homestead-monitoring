@@ -10,6 +10,7 @@ This project is designed for hot, arid climates where plants are exposed to very
 
 ## Repository Structure
 
+```
 homestead-monitoring
 ├── README.md
 ├── firmware
@@ -17,6 +18,7 @@ homestead-monitoring
 └── docs
     ├── supplies.md                  ← full BOM with links and quantities
     └── wiring.md                    ← ESP32 pin map and power path
+```
 
 
 ## 1) Project Goals
@@ -171,7 +173,7 @@ Design targets:
 
 ### Phase 1 — Documentation and Procurement
 
-~~- Finalize supplies with exact quantities and sources.~~
+- ~~Finalize supplies with exact quantities and sources.~~
 - Prepare wiring diagram and ESP32 pin map.
 
 ### Phase 2 — Single-Zone Prototype
@@ -192,8 +194,8 @@ Design targets:
 
 ## 11) TODO
 
-~~1. Create `docs/supplies.md` — exact product links, quantities, and per-unit costs.~~
-~~2. Create `docs/wiring.md` — ESP32 pin map, power path diagram, and cable routing notes.~~
+1. ~~Create `docs/supplies.md` — exact product links, quantities, and per-unit costs.~~
+2. ~~Create `docs/wiring.md` — ESP32 pin map, power path diagram, and cable routing notes.~~
 3. Create `firmware/esp32-olla-monitor.ino` starter sketch with:
    - calibration constants (`dryCal`, `wetCal`),
    - rolling average filter,
